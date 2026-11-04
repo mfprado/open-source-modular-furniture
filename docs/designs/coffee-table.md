@@ -52,9 +52,6 @@ All sizes in millimetres, like the rest of the site.
 
 ## Warnings
 
-- **Pan flex.** When a 50 kg load (a person leaning) in the middle of the pan would bend it
-  more than span / 250. Says how much it would bend and suggests switching on the middle
-  rail, or a smaller table.
 - **Tall table.** When the height is more than 1.5 × the narrower of width and depth:
   the table could tip over; make it lower or wider.
 
@@ -75,9 +72,11 @@ All sizes in millimetres, like the rest of the site.
 - How much height the levelling mount really adds (the desk assumes about 1").
 - The largest pan the sheet metal shop can bend.
 - The drop-in T-nut listing (McMaster 6000N501): confirm it is 1/4"-20 for 10 series, and its price.
-- How the pan's stiffness is worked out for the flex warning: the folded edges make it much
-  stiffer than a flat sheet, and it is held on all four sides. The first version treats it
-  as a simple model; check it against the real pan (does the default 610 mm pan flex
-  noticeably when leaned on?).
+- A pan flex warning, left out of the first version. The agreed rule was: warn when 50 kg
+  in the middle of the pan bends it more than span / 250. But the usual flat-plate formula
+  (1.6 mm stainless held on four edges) gives about 30 mm for the default 610 mm pan, far
+  more than the real pan does: it ignores the folded edges and the sheet stretching like
+  a drum skin once it bends. Needs either a measurement of a real pan under a known
+  weight, or a size rule for when to use the middle rail.
 - Which way the middle rail should run on a square table, and whether the pan needs a screw
   into it.
