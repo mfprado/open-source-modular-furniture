@@ -548,10 +548,10 @@ export function renderParts(design) {
     const nut = tNut(p);
     nut.scale.setScalar(3);
     const bolt = new THREE.Group();
-    bolt.add(boltHead(p), boltShank(p, p * 0.375));
+    bolt.add(boltHead(p, false), boltShank(p, p * 0.375));
     const out = {
       profile: shot(profileBar(p, p * 4, frame), new THREE.Vector3(1, 0.8, 1.6)),
-      lBracket: shot(lBracket(p, p * 0.875, 2.5, frame, p), new THREE.Vector3(0.6, 0.5, 1.4)),
+      lBracket: shot(lBracket(p, p * 0.875, 2.5, frame, p, false), new THREE.Vector3(0.6, 0.5, 1.4)),
       tNut: shot(nut),
       bolt: shot(bolt),
       foot: shot(levellingFoot(p)),
@@ -638,18 +638,23 @@ function orient(obj, a, b, at) {
 }
 
 // Drop-in T-nut as it sits in a slot: small block, pressed against the slot lips.
-// Flanged button head of a hex socket bolt (supplier drawing: head Ø11.4 mm and 2.6 mm
-// tall on an M6). Sits on the surface at y = 0 and points along +y; flip it to hang below.
-function boltHead(p) {
+// Button head of a hex socket bolt, flanged by default (supplier drawing: head Ø11.4 mm and
+// 2.6 mm tall on an M6); the coffee table's screws are plain button heads, no flange.
+// Sits on the surface at y = 0 and points along +y; flip it to hang below.
+function boltHead(p, flanged = true) {
   const g = new THREE.Group();
   const r = p * 0.19;
-  const flange = mesh(new THREE.CylinderGeometry(r, r, p * 0.03, 24), chrome);
-  flange.position.y = p * 0.015;
+  const base = flanged ? p * 0.03 : 0;
+  if (flanged) {
+    const flange = mesh(new THREE.CylinderGeometry(r, r, base, 24), chrome);
+    flange.position.y = base / 2;
+    g.add(flange);
+  }
   const dome = mesh(new THREE.CylinderGeometry(r * 0.45, r * 0.78, p * 0.06, 24), chrome);
-  dome.position.y = p * 0.06;
+  dome.position.y = base + p * 0.03;
   const socket = mesh(new THREE.CylinderGeometry(r * 0.3, r * 0.3, p * 0.01, 6), dark);
-  socket.position.y = p * 0.09;
-  g.add(flange, dome, socket);
+  socket.position.y = base + p * 0.06;
+  g.add(dome, socket);
   return g;
 }
 
@@ -765,7 +770,7 @@ function gusset(L, w, holes, mat, p) {
 // 7/8" wide (22.6 mm), 3/16" thick, a small fillet inside the bend and the free ends
 // rounded on the inside face, one Ø0.27" hole centred in each leg. Profiles lie at local
 // y < 0 and x < 0; the width runs along local z.
-function lBracket(L, w, t, mat, p) {
+function lBracket(L, w, t, mat, p, flanged = true) {
   const g = new THREE.Group();
   const th = p * 0.1875;
   const rf = th * 0.6;
@@ -783,7 +788,7 @@ function lBracket(L, w, t, mat, p) {
   g.add(mesh(geo, mat));
   const at = L * 0.56; // hole centre along each leg
   for (const rz of [0, Math.PI / 2]) {
-    const head = boltHead(p);
+    const head = boltHead(p, flanged);
     head.rotation.z = -rz; // head points away from the profile
     head.position.set(rz ? th : at, rz ? at : th, 0);
     const nut = tNut(p);
@@ -1082,7 +1087,7 @@ function buildCoffee(design) {
       const pt = dir[0]
         ? at(face, centre + (o[1] * p) / 2, z + (o[2] * p) / 2)
         : at(centre + (o[0] * p) / 2, face, z + (o[2] * p) / 2);
-      add(orient(lBracket(p, p * 0.875, 2.5, frame, p), dir, o, pt), bracket);
+      add(orient(lBracket(p, p * 0.875, 2.5, frame, p, false), dir, o, pt), bracket);
     }
   };
   const legs = [[p / 2, p / 2], [W - p / 2, p / 2], [p / 2, D - p / 2], [W - p / 2, D - p / 2]];
