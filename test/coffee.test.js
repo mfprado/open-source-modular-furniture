@@ -51,6 +51,7 @@ test('rows and steps follow the design', () => {
   const rows = coffeeRows(d);
   assert.equal(rows.find((r) => r[0] === 'Silver Corner Bracket')[2], 20);
   assert.equal(rows.find((r) => r[0] === 'Drop-in T-nut')[2], d.parts.panScrews);
+  assert.equal(rows.find((r) => r[0] === 'Hex key (Allen wrench)')[1].startsWith('5/32"'), true);
   assert.equal(coffeeSteps(d).length, 8);
   assert.equal(coffeeSteps(computeCoffee({})).length, 7);
 });
