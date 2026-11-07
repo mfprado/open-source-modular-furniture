@@ -23,13 +23,13 @@ the designer of the Profile Desk Frame (CPlot). The default is the designer's ow
 
 ## Settings on the site
 
-All sizes in millimetres, like the rest of the site.
+All sizes in millimetres, like the rest of the site. The minimum is 160 mm: the first 10 mm step at or above 6" (152 mm).
 
 | Setting | Default | Min | Max | Step / choices |
 |---|---|---|---|---|
-| Width (outside of the frame) | 660 | 150 | 1220 | 10 |
-| Depth (outside of the frame) | 660 | 150 | 1220 | 10 |
-| Leg height (without the feet) | 360 | 150 | 1220 | 10 |
+| Width (outside of the frame) | 660 | 160 | 1220 | 10 |
+| Depth (outside of the frame) | 660 | 160 | 1220 | 10 |
+| Leg height (without the feet) | 360 | 160 | 1220 | 10 |
 | Middle rail | No | | | No / Yes |
 
 ## Rules

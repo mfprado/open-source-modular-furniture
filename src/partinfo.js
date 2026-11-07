@@ -7,6 +7,43 @@ const amazon = (q) => `https://www.amazon.co.uk/s?k=${encodeURIComponent(q)}&i=d
 const series = (n) => n.match(/\d{4}/)?.[0] ?? '';
 
 const PARTS = [
+  // coffee table (CPlot): listed first so its 1" parts don't fall into the desk's entries
+  {
+    match: /^(Leg|Top rail|Bottom rail|Middle rail) 1" 10-series/,
+    title: (n) => n,
+    shot: 'profile',
+    search: () => '1 inch 10 series T-slot aluminium extrusion',
+    text: '1" × 1" 10-series T-slot aluminium extrusion, cut to length. The rails fit between the legs, flush with their outsides; the leg ends take the levelling mounts.',
+  },
+  {
+    match: /^Silver Corner Bracket/,
+    title: () => 'Silver Corner Bracket',
+    text: 'L bracket, 1" long, for 1" rail, anodised aluminium. Comes with two 1/4"-20 × 1/2" button head screws and two end-feed nuts. One per rail end, centred: under the top rails, on top of the bottom rails.',
+    code: 'McMaster 47065T236',
+    shot: 'lBracket',
+    search: () => '1 inch 10 series T-slot corner bracket',
+  },
+  {
+    match: /^Levelling mount/,
+    title: () => 'Levelling mount',
+    text: 'Antislip levelling mount for 1" rail: Ø1" base, 1/4"-20 stud into the tapped leg end, adjusting nut and lock nut. Turn to level the table.',
+    code: 'McMaster 47065T341',
+    shot: 'foot',
+    search: () => 'Antislip Leveling Mount for 1" High Single Rail',
+  },
+  {
+    match: /^Drop-in T-nut 1\/4"-20/,
+    title: () => 'Drop-in T-nut 1/4"-20',
+    text: 'Drops into the inner slot of a top rail after the frame is built. Takes a 1/4"-20 × 3/8" button head screw through the pan’s folded edge.',
+    code: 'McMaster 6000N501',
+    shot: 'tNut',
+    search: () => '1/4-20 drop in T-nut 10 series',
+  },
+  {
+    match: /^Stainless steel pan/,
+    title: (n) => n,
+    text: '1/16" stainless steel sheet with its edges folded down 0.875", bent to order by a sheet metal shop. It drops into the opening between the top rails, flush with them, and is screwed to the rails through its folded edges.',
+  },
   {
     match: /^(Leg|Long rail|Short rail|Centre rail|End stretcher|Back stretcher)/,
     title: (n) => n,

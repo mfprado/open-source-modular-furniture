@@ -27,7 +27,7 @@ test('rails and pan are the outside size less a 1" leg at each end', () => {
 
 test('pan screws: one per 300 mm of each side, at least one', () => {
   assert.equal(computeCoffee({ width: 1220, depth: 660 }).parts.panScrews, 2 * 4 + 2 * 2);
-  assert.equal(computeCoffee({ width: 150, depth: 150 }).parts.panScrews, 4);
+  assert.equal(computeCoffee({ width: 160, depth: 160 }).parts.panScrews, 4);
 });
 
 test('middle rail: one more rail along the longer sides and 2 more brackets', () => {

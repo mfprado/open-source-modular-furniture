@@ -14,7 +14,8 @@ preview.
 ![Drawing view: the desk as a technical drawing with dimension lines](docs/screenshot-drawing-view.png)
 
 The profile desk is based on the open source Profile Desk Frame by Palmer Purcell (CPlot,
-[@c.plot_ on Instagram](https://www.instagram.com/c.plot_/)).
+[@c.plot_ on Instagram](https://www.instagram.com/c.plot_/)). The coffee table is designed by
+CPlot too.
 
 ## Contributing
 
@@ -113,6 +114,21 @@ closing it.
   a cross clamp per post over the sheet holds a width rail front and back.
 - If the acrylic would sag more than span / 250, middle columns are added.
 
+### Coffee table
+
+Design brief: [docs/designs/coffee-table.md](docs/designs/coffee-table.md).
+
+- Four 1" 10-series T-slot legs on levelling mounts, with a ring of rails flush with the leg
+  tops and another flush with the leg ends, all fitted between the legs.
+- One corner bracket (McMaster 47065T236) per rail end, centred: under the top rails, on
+  top of the bottom rails. None on the inner faces of the top rails, where the pan folds down.
+- The top is a 1/16" stainless steel pan, bent to order with its edges folded down 0.875".
+  It drops into the opening between the top rails and is screwed to their inner slots
+  through the folds, one 1/4"-20 screw and drop-in T-nut per 300 mm of each side.
+- Optional middle rail under the pan, parallel to the longer sides, 1.6 mm lower than the
+  top rails so the pan rests on it; the two folds it meets get a 1" notch.
+- Warns when the table is taller than 1.5 × its narrower side.
+
 ## Run
 
 No build step. Serve the folder and open it:
@@ -135,6 +151,9 @@ Tests: `node --test`
 - Clamps on that listing only go to 10 mm bore, so rods are limited to Ø6, 8, 10.
 - Sag check treats fluted acrylic as solid sheet of the same thickness; fluted is stiffer
   along the flutes, weaker across.
+- Coffee table: the height the levelling mount adds (taken as 1", like the desk), the
+  largest pan the sheet metal shop can bend, and the drop-in T-nut listing (McMaster
+  6000N501, page not read). There is no pan flex warning yet; see the design brief.
 
 ## Support
 
