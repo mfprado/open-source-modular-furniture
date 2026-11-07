@@ -545,7 +545,7 @@ export function renderParts(design) {
   if (design.kind === 'coffee') {
     const { p } = design;
     const frame = profileMaterial();
-    const nut = tNut(p);
+    const nut = rollInNut(p);
     nut.scale.setScalar(3);
     const bolt = new THREE.Group();
     bolt.add(boltHead(p, false), boltShank(p, p * 0.375));
@@ -1050,6 +1050,28 @@ const TAB_T = 5; // matches TAB_THICKNESS in desk.js
 
 // --- coffee table ------------------------------------------------------------------
 
+// Roll-in T-nut with a spring ball (CPlot's pan nuts): a flat top under the slot lips with
+// the tapped hole, a rounded underside so it rolls into the slot and turns a quarter turn,
+// and a small spring-loaded ball on top that holds it where it's put. Same axes as tNut:
+// top towards the fitting along local +y, length along local z.
+function rollInNut(p) {
+  const g = new THREE.Group();
+  const hw = p * 0.24, depth = p * 0.2, len = p * 0.42;
+  const s = new THREE.Shape().moveTo(-hw, 0).lineTo(hw, 0).lineTo(hw, -depth * 0.35)
+    .quadraticCurveTo(hw, -depth, 0, -depth).quadraticCurveTo(-hw, -depth, -hw, -depth * 0.35).closePath();
+  const geo = new THREE.ExtrudeGeometry(s, { depth: len, bevelEnabled: true, bevelThickness: 0.2, bevelSize: 0.2, bevelSegments: 1, curveSegments: 12 });
+  geo.translate(0, 0, -len / 2);
+  g.add(mesh(geo, chrome));
+  // tapped hole, standing just proud of the top (and its bevel) so it reads from above
+  const hole = mesh(new THREE.CylinderGeometry(p * 0.1, p * 0.1, depth + 0.6, 16), dark);
+  hole.position.y = -depth / 2 + 0.3;
+  g.add(hole);
+  const ball = mesh(new THREE.SphereGeometry(p * 0.035, 12, 8), chrome);
+  ball.position.set(0, p * 0.01, len * 0.32);
+  g.add(ball);
+  return g;
+}
+
 // Brushed stainless steel for the pan: fully metallic, a little rough so it reads satin.
 const stainless = new THREE.MeshPhysicalMaterial({ color: 0xdfe2e4, metalness: 1, roughness: 0.42, clearcoat: 0.2, clearcoatRoughness: 0.4 });
 
@@ -1148,11 +1170,12 @@ function buildCoffee(design) {
   tag = 'nuts';
   const along = (n, len, off) => Array.from({ length: n }, (_, i) => off + ((i + 1) * len) / (n + 1));
   const nutZ = topZ + p / 2;
-  const nut = (x, y, inward) => add(orient(tNut(p), [0, 0, 1], inward, at(x, y, nutZ)), 'Drop-in T-nut 1/4"-20');
+  // top of the nut just under the slot lips
+  const nut = (x, y, inward) => add(orient(rollInNut(p), [0, 0, 1], inward, at(x, y, nutZ)), 'Drop-in T-nut 1/4"-20');
   for (const [y, sy] of [[p / 2, 1], [D - p / 2, -1]])
-    for (const x of along(parts.screwsW, W - 2 * p, p)) nut(x, y + sy * (p / 2 - p * 0.2), [0, sy, 0]);
+    for (const x of along(parts.screwsW, W - 2 * p, p)) nut(x, y + sy * (p / 2 - p * 0.1), [0, sy, 0]);
   for (const [x, sx] of [[p / 2, 1], [W - p / 2, -1]])
-    for (const y of along(parts.screwsD, D - 2 * p, p)) nut(x + sx * (p / 2 - p * 0.2), y, [sx, 0, 0]);
+    for (const y of along(parts.screwsD, D - 2 * p, p)) nut(x + sx * (p / 2 - p * 0.1), y, [sx, 0, 0]);
 
   // 7. the pan: top sheet over the opening, edges folded down inside it
   tag = 'pan';

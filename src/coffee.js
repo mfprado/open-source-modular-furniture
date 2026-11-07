@@ -105,7 +105,7 @@ export function coffeeRows({ parts }) {
     ['Levelling mount', 'McMaster 47065T341, for 1" rail, into the leg end', parts.feet],
     ['Stainless steel pan', `${parts.pan.width} × ${parts.pan.depth} mm, 1/16" (${parts.pan.thickness} mm) sheet, edges folded down 0.875" (${parts.pan.fold} mm)${parts.pan.notched ? ', a 3" notch in the middle of two folded edges for the middle rail and its brackets' : ''}; bent to order`, 1],
     ['Button head screw', '1/4"-20 × 3/8", pan to rails', parts.panScrews],
-    ['Drop-in T-nut', '1/4"-20, 10 series (McMaster 6000N501)', parts.panScrews],
+    ['Drop-in T-nut', '1/4"-20, 10 series, roll-in with spring ball (McMaster 6000N501)', parts.panScrews],
     ['Hex key (Allen wrench)', '5/32", for all the 1/4"-20 button head screws', 1],
   ];
 }

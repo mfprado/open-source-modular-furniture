@@ -19,7 +19,7 @@ the designer of the Profile Desk Frame (CPlot). The default is the designer's ow
 | Levelling mount for 1" rail, McMaster 47065T341 | one size | screws into the end of the leg; the desk takes it as lifting the leg about 1" (25.4 mm) | Designer (same part as the desk); part number from `src/desk.js` |
 | Stainless steel pan | bent to order by a sheet metal shop | 1/16" (1.6 mm) sheet; fits the opening between the top rails; edges folded down 0.875" (22.2 mm) | Designer |
 | Pan screw | 1/4"-20 × 3/8" | through the pan's folded edges | Designer |
-| Drop-in T-nut, 1/4"-20, 10 series, McMaster 6000N501 | one size | drops into the rail slot after the frame is built | Designer, https://www.mcmaster.com/6000N501/ (page did not load on 2026-11-04; details not read) |
+| Drop-in T-nut, 1/4"-20, 10 series, McMaster 6000N501 | one size | roll-in with a spring ball; drops into the rail slot after the frame is built | Designer, https://www.mcmaster.com/6000N501/ (page did not load on 2026-11-04; details not read) |
 | Hex key (Allen wrench) | 5/32" | fits the 1/4"-20 button head screws | Designer |
 
 ## Settings on the site

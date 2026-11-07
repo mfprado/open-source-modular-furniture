@@ -34,7 +34,7 @@ const PARTS = [
   {
     match: /^Drop-in T-nut 1\/4"-20/,
     title: () => 'Drop-in T-nut 1/4"-20',
-    text: 'Drops into the inner slot of a top rail after the frame is built. Takes a 1/4"-20 × 3/8" button head screw through the pan’s folded edge.',
+    text: 'Roll-in nut with a spring ball: drop it into the inner slot of a top rail after the frame is built and turn it a quarter turn; the ball holds it in place. Takes a 1/4"-20 × 3/8" button head screw through the pan’s folded edge.',
     code: 'McMaster 6000N501',
     shot: 'tNut',
     search: () => '1/4-20 drop in T-nut 10 series',
