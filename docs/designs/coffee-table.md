@@ -47,11 +47,12 @@ All sizes in millimetres, like the rest of the site. The minimum is 160 mm: the 
   edges folded down 22.2 mm.
 - Pan screws go through the folded edges into the inner slot of the top rails, one per
   300 mm of each side, with a drop-in T-nut each.
-- Middle rail (when switched on): one rail under the pan, its top one pan thickness
-  (1.6 mm) below the top rails so the pan rests on it, running parallel to the longer sides
-  and halving the shorter span. It is joined to the rails with a corner bracket under
-  each end, so 2 more brackets. The pan's two folded edges it meets get a
-  1" notch so they fit round it.
+- Middle rail (when switched on): one rail under the pan, its top flush with the top
+  rails, running parallel to the longer sides and halving the shorter span. It is joined
+  to the rails with 2 corner brackets at each end, one each side, so 4 more brackets. The
+  pan's two folded edges it meets get a 3" notch (the rail plus a bracket arm each side)
+  so they fit round it. The pan rests on the middle rail, so its top sits 1/16" above the
+  top rails (flush with them when there is no middle rail).
 
 ## Warnings
 
@@ -66,8 +67,8 @@ All sizes in millimetres, like the rest of the site. The minimum is 160 mm: the 
    of each end, centred (slide the end-feed nuts into the slots first).
 4. Join the top rails to the legs, flush with the leg tops, with a corner bracket under
    each end, centred.
-5. If the middle rail is on: join it between the top rails with a corner bracket under each
-   end, 1.6 mm below the top rails.
+5. If the middle rail is on: join it between the top rails, flush with them, with 2 corner
+   brackets at each end, one each side.
 6. Drop the T-nuts into the inner slot of the top rails, lined up with the pan's screw holes.
 7. Set the pan into the opening and screw it to the rails through its folded edges.
 8. Stand the table up and level it with the feet.

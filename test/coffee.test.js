@@ -30,11 +30,11 @@ test('pan screws: one per 300 mm of each side, at least one', () => {
   assert.equal(computeCoffee({ width: 160, depth: 160 }).parts.panScrews, 4);
 });
 
-test('middle rail: one more rail along the longer sides and 2 more brackets', () => {
+test('middle rail: one more rail along the longer sides and 4 more brackets', () => {
   const d = computeCoffee({ width: 1200, depth: 700, middleRail: 'yes' });
   const mid = d.parts.cuts.find((c) => c.role.startsWith('Middle rail'));
   assert.equal(mid.length, d.railW);
-  assert.equal(d.parts.brackets, 18);
+  assert.equal(d.parts.brackets, 20);
   const deep = computeCoffee({ width: 700, depth: 1200, middleRail: 'yes' });
   assert.equal(deep.parts.cuts.find((c) => c.role.startsWith('Middle rail')).length, deep.railD);
 });
@@ -49,7 +49,7 @@ test('warns when taller than 1.5 x the narrower side', () => {
 test('rows and steps follow the design', () => {
   const d = computeCoffee({ middleRail: 'yes' });
   const rows = coffeeRows(d);
-  assert.equal(rows.find((r) => r[0] === 'Silver Corner Bracket')[2], 18);
+  assert.equal(rows.find((r) => r[0] === 'Silver Corner Bracket')[2], 20);
   assert.equal(rows.find((r) => r[0] === 'Drop-in T-nut')[2], d.parts.panScrews);
   assert.equal(coffeeSteps(d).length, 8);
   assert.equal(coffeeSteps(computeCoffee({})).length, 7);

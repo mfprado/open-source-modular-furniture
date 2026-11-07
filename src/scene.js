@@ -1126,14 +1126,14 @@ function buildCoffee(design) {
   // 4. top rails, flush with the leg tops
   tag = 'topRails';
   ring(topZ, 'Top', -1);
-  // 5. middle rail under the pan, along the longer sides, joined to the top rails. It sits
-  //    one pan thickness lower so the pan rests on it; the pan's folds are notched round it.
+  // 5. middle rail under the pan, along the longer sides, flush with the top rails and
+  //    joined to them with a bracket each side; the pan's folds are notched round both (CPlot).
   const { width: pw, depth: pd, thickness: t, fold } = parts.pan;
   if (midRail) {
     tag = 'midRail';
     const len = midAlongX ? design.railW : design.railD;
-    const z = topZ - t;
-    const sides = [[0, 0, -1]]; // one bracket under each end
+    const z = topZ;
+    const sides = midAlongX ? [[0, 1, 0], [0, -1, 0]] : [[1, 0, 0], [-1, 0, 0]];
     if (midAlongX) {
       barX(len, p, D / 2, z, `Middle rail ${name} × ${len} mm`);
       joint([1, 0, 0], p, D / 2, z + p / 2, sides);
@@ -1154,24 +1154,27 @@ function buildCoffee(design) {
   for (const [x, sx] of [[p / 2, 1], [W - p / 2, -1]])
     for (const y of along(parts.screwsD, D - 2 * p, p)) nut(x + sx * (p / 2 - p * 0.2), y, [sx, 0, 0]);
 
-  // 7. the pan: top sheet flush with the rails, edges folded down inside the opening
+  // 7. the pan: top sheet over the opening, edges folded down inside it
   tag = 'pan';
   const pan = new THREE.Group();
   const top = mesh(new THREE.BoxGeometry(pw, t, pd), stainless);
   top.position.y = -t / 2;
   pan.add(top);
-  // folds as [along x?, length, x, z]; the two the middle rail meets get a 1" notch
+  // folds as [along x?, length, x, z]; the two the middle rail meets get a 3" notch: the
+  // rail and a bracket arm each side of it
   const folds = [[true, pw, 0, -pd / 2 + t / 2], [true, pw, 0, pd / 2 - t / 2], [false, pd, -pw / 2 + t / 2, 0], [false, pd, pw / 2 - t / 2, 0]];
   for (const [alongX, len, x, z] of folds) {
     const notched = midRail && alongX !== midAlongX;
-    const pieces = notched ? [[(len - p) / 2, -(len + p) / 4], [(len - p) / 2, (len + p) / 4]] : [[len, 0]];
+    const gap = 3 * p;
+    const pieces = notched ? [[(len - gap) / 2, -(len + gap) / 4], [(len - gap) / 2, (len + gap) / 4]] : [[len, 0]];
     for (const [l, off] of pieces) {
       const edge = mesh(new THREE.BoxGeometry(alongX ? l : t, fold, alongX ? t : l), stainless);
       edge.position.set(x + (alongX ? off : 0), -fold / 2, z + (alongX ? 0 : off));
       pan.add(edge);
     }
   }
-  pan.position.copy(at(W / 2, D / 2, fh + legLength));
+  // flush with the top rails, or resting on the middle rail 1/16" above them (CPlot)
+  pan.position.copy(at(W / 2, D / 2, fh + legLength + (midRail ? t : 0)));
   add(pan, `Stainless steel pan ${pw} × ${pd} mm`, [['Button head screw 1/4"-20 × 3/8"', parts.panScrews]]);
   return g;
 }

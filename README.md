@@ -125,8 +125,9 @@ Design brief: [docs/designs/coffee-table.md](docs/designs/coffee-table.md).
 - The top is a 1/16" stainless steel pan, bent to order with its edges folded down 0.875".
   It drops into the opening between the top rails and is screwed to their inner slots
   through the folds, one 1/4"-20 screw and drop-in T-nut per 300 mm of each side.
-- Optional middle rail under the pan, parallel to the longer sides, 1.6 mm lower than the
-  top rails so the pan rests on it; the two folds it meets get a 1" notch.
+- Optional middle rail under the pan, parallel to the longer sides and flush with the top
+  rails, with a bracket each side at both ends; the two folds it meets get a 3" notch, and the pan
+  rests on it, 1/16" above the top rails.
 - Warns when the table is taller than 1.5 × its narrower side.
 
 ## Run
