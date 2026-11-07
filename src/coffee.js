@@ -54,9 +54,10 @@ export function computeCoffee(input) {
     ...(midRail ? [{ role: 'Middle rail, under the pan', length: midLength, qty: 1 }] : []),
   ];
 
-  // 2 brackets wherever a rail meets a leg, one each side of the rail: 8 rails x 2 ends.
-  // The middle rail adds 2 at each end, where it meets the top rails.
-  const brackets = 8 * 2 * 2 + (midRail ? 4 : 0);
+  // One bracket wherever a rail meets a leg, centred on the rail's open face: under a top
+  // rail, on top of a bottom rail (CPlot). Not on the inner faces of the top rails, where
+  // the pan's folds hang. 8 rails x 2 ends, plus one under each end of the middle rail.
+  const brackets = 8 * 2 + (midRail ? 2 : 0);
   // Pan screws through the folded edges into the inner slot of the top rails, one per
   // 300 mm of each side (CPlot's 610 mm pan: 2 a side, 8 in all).
   const screwsW = Math.max(1, Math.round(panW / SCREW_SPACING));
@@ -90,7 +91,7 @@ export function computeCoffee(input) {
       screwsW,
       screwsD,
       feet: 4,
-      pan: { width: panW, depth: panD, thickness: PAN_THICKNESS, fold: PAN_FOLD },
+      pan: { width: panW, depth: panD, thickness: PAN_THICKNESS, fold: PAN_FOLD, notched: midRail },
     },
   };
 }
@@ -101,7 +102,7 @@ export function coffeeRows({ parts }) {
     ...parts.cuts.map((c) => [name, `${c.length} mm · ${c.role}`, c.qty]),
     ['Silver Corner Bracket', BRACKET, parts.brackets],
     ['Levelling mount', 'McMaster 47065T341, for 1" rail, into the leg end', parts.feet],
-    ['Stainless steel pan', `${parts.pan.width} × ${parts.pan.depth} mm, 1/16" (${parts.pan.thickness} mm) sheet, edges folded down 0.875" (${parts.pan.fold} mm); bent to order`, 1],
+    ['Stainless steel pan', `${parts.pan.width} × ${parts.pan.depth} mm, 1/16" (${parts.pan.thickness} mm) sheet, edges folded down 0.875" (${parts.pan.fold} mm)${parts.pan.notched ? ', a 1" notch in the middle of two folded edges for the middle rail' : ''}; bent to order`, 1],
     ['Button head screw', '1/4"-20 × 3/8", pan to rails', parts.panScrews],
     ['Drop-in T-nut', '1/4"-20, 10 series (McMaster 6000N501)', parts.panScrews],
   ];
@@ -115,9 +116,9 @@ export function coffeeSteps(d) {
   return [
     `Cut 4 legs (${legLength} mm), 4 front and back rails (${railW} mm) and 4 end rails (${railD} mm)${midRail ? `, plus a middle rail (${midAlongX ? railW : railD} mm)` : ''}.`,
     'Screw a levelling mount into the bottom of each leg.',
-    `Join the bottom rails to the legs, undersides flush with the leg ends, with 2 corner brackets per joint, one each side of the rail. ${slide}`,
-    'Join the top rails to the legs the same way, tops flush with the leg tops.',
-    ...(midRail ? [`Join the middle rail between the ${midAlongX ? 'end' : 'front and back'} rails at their centre, top flush with them, with 2 corner brackets at each end.`] : []),
+    `Join the bottom rails to the legs, undersides flush with the leg ends and outsides flush with the legs, with a corner bracket on top of each end, centred on the rail. ${slide}`,
+    'Join the top rails to the legs, tops flush with the leg tops, with a corner bracket under each end, centred on the rail.',
+    ...(midRail ? [`Join the middle rail between the ${midAlongX ? 'end' : 'front and back'} rails at their centre, with a corner bracket under each end. Set its top ${PAN_THICKNESS} mm below the top rails, so the pan rests on it.`] : []),
     `Drop ${parts.panScrews} T-nuts into the inner slot of the top rails (${parts.screwsW} along each front and back rail, ${parts.screwsD} along each end), lined up with the pan’s screw holes.`,
     `Set the pan (${parts.pan.width} × ${parts.pan.depth} mm) into the opening and screw it to the rails through its folded edges.`,
     'Stand the table up and level it with the feet.',

@@ -40,15 +40,18 @@ All sizes in millimetres, like the rest of the site.
   2 width rails of width − 2 × 25.4 mm, 2 depth rails of depth − 2 × 25.4 mm.
 - 4 bottom rails, the same lengths, fitted between the legs with their undersides flush
   with the leg ends.
-- 2 corner brackets at every place a rail meets a leg, one each side of the rail:
-  8 rails × 2 ends × 2 = 32 brackets.
+- 1 corner bracket at every place a rail meets a leg, centred on the rail: under a top
+  rail, on top of a bottom rail. 8 rails × 2 ends = 16 brackets. No brackets on the inner
+  faces of the top rails, where the pan's folds hang down.
 - The pan fills the opening between the top rails: (width − 2 × 25.4) × (depth − 2 × 25.4),
   edges folded down 22.2 mm.
 - Pan screws go through the folded edges into the inner slot of the top rails, one per
   300 mm of each side, with a drop-in T-nut each.
-- Middle rail (when switched on): one rail under the pan, its top flush with the top rails,
-  running parallel to the longer sides and halving the shorter span. It is joined to the
-  rails at each end with 2 corner brackets, so 4 more brackets. The pan rests on it.
+- Middle rail (when switched on): one rail under the pan, its top one pan thickness
+  (1.6 mm) below the top rails so the pan rests on it, running parallel to the longer sides
+  and halving the shorter span. It is joined to the rails with a corner bracket under
+  each end, so 2 more brackets. The pan's two folded edges it meets get a
+  1" notch so they fit round it.
 
 ## Warnings
 
@@ -59,10 +62,12 @@ All sizes in millimetres, like the rest of the site.
 
 1. Cut 4 legs, 4 width rails and 4 depth rails (top and bottom) to length.
 2. Screw a levelling foot into the bottom of each leg.
-3. Join the bottom rails to the legs, flush with the leg ends, with 2 corner brackets per
-   joint (slide the end-feed nuts into the slots first).
-4. Join the top rails to the legs, flush with the leg tops, the same way.
-5. If the middle rail is on: join it between the top rails with 2 corner brackets each end.
+3. Join the bottom rails to the legs, flush with the leg ends, with a corner bracket on top
+   of each end, centred (slide the end-feed nuts into the slots first).
+4. Join the top rails to the legs, flush with the leg tops, with a corner bracket under
+   each end, centred.
+5. If the middle rail is on: join it between the top rails with a corner bracket under each
+   end, 1.6 mm below the top rails.
 6. Drop the T-nuts into the inner slot of the top rails, lined up with the pan's screw holes.
 7. Set the pan into the opening and screw it to the rails through its folded edges.
 8. Stand the table up and level it with the feet.

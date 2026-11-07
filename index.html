@@ -394,7 +394,7 @@
       </nav>
     </footer>
   </section>
-  <main data-for="shelf desk ideas">
+  <main data-for="shelf desk coffee ideas">
     <aside class="settings" aria-label="Settings">
       <p class="crumb" id="crumb"></p>
       <p class="page-title" id="pageTitle">Rod shelf</p>
@@ -449,12 +449,24 @@
           <label>Load on top <span class="num"><input name="loadKg" type="number" min="0" step="5" /><i>kg</i></span></label>
         </fieldset>
       </form>
+      <form id="coffeeConfig" data-for="coffee">
+        <fieldset>
+          <legend>Size</legend>
+          <label>Width <span class="num"><input name="width" type="number" min="150" max="1220" step="10" /><i>mm</i></span></label>
+          <label>Depth <span class="num"><input name="depth" type="number" min="150" max="1220" step="10" /><i>mm</i></span></label>
+          <label>Leg height <span class="num"><input name="height" type="number" min="150" max="1220" step="10" /><i>mm</i></span></label>
+        </fieldset>
+        <fieldset>
+          <legend>Frame</legend>
+          <label>Middle rail <select name="middleRail"><option value="no">No</option><option value="yes">Yes</option></select></label>
+        </fieldset>
+      </form>
       <p class="hint" data-for="desk">Based on the open source Profile Desk Frame by Palmer Purcell (CPlot): <a href="https://www.instagram.com/c.plot_/" target="_blank" rel="noopener">@c.plot_ on Instagram ↗</a></p>
       <div data-for="ideas">
         <p>Ideas for pieces that are not in the configurator yet, as they were suggested. Working out the parts and the build is up to whoever designs one.</p>
         <p>Have an idea? <a href="https://github.com/mfprado/open-source-modular-furniture/issues/new?template=idea.md">Open an issue on GitHub</a>.</p>
       </div>
-      <button id="reset" type="button" class="ghost" data-for="shelf desk">Reset to defaults</button>
+      <button id="reset" type="button" class="ghost" data-for="shelf desk coffee">Reset to defaults</button>
       <footer class="donate">
         <p>Free and open source. If it helped you build something, <a href="https://cafecito.app/mfprado" target="_blank" rel="noopener">buy the maintainers a coffee</a>.</p>
       </footer>
@@ -463,7 +475,7 @@
       <h2>Ideas board</h2>
       <div id="ideaList"></div>
     </section>
-    <section class="stage" data-for="shelf desk">
+    <section class="stage" data-for="shelf desk coffee">
       <div id="viewer">
         <div class="viewbar" role="toolbar" aria-label="3D view">
           <div class="views" role="group" aria-label="Camera">
@@ -488,7 +500,7 @@
         </div>
       </div>
     </section>
-    <aside class="build" data-for="shelf desk" aria-label="Your build">
+    <aside class="build" data-for="shelf desk coffee" aria-label="Your build">
       <p class="crumb">Your build</p>
       <div id="notices" class="notices" role="status" hidden><ul id="warnings"></ul></div>
       <dl class="keys" id="keys"></dl>

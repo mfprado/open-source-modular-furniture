@@ -1,7 +1,8 @@
 import { computeDesign, assemblySteps, cutMyOrder, shelfKeys, DEFAULTS, SHEET_MATERIALS } from './calc.js';
 import { computeDesk, deskRows, deskSteps, deskKeys, DESK_DEFAULTS } from './desk.js';
+import { computeCoffee, coffeeRows, coffeeSteps, coffeeKeys, COFFEE_DEFAULTS } from './coffee.js';
 import { partInfo } from './partinfo.js';
-import { createViewer, renderParts, renderSteps, shelfStepTags, deskStepTags } from './scene.js';
+import { createViewer, renderParts, renderSteps, shelfStepTags, deskStepTags, coffeeStepTags } from './scene.js';
 import { downloadSpec } from './pdf.js';
 import { IDEAS, ideaCard, ideaTeaser, loadPeople } from './ideas.js';
 import { HOME_PAGE, IDEAS_PAGE, findPiece, navHtml, pieceCardsHtml } from './catalog.js';
@@ -81,6 +82,18 @@ const TABS = {
     summary: (d) =>
       `${d.size}${d.size} profile · legs ${d.legLength} mm · ${d.withStretchers ? `stretchers at ${d.stretcherZ} mm` : 'no stretchers'}${d.midRail ? ' · centre rail' : ''} · sag ${d.check.topSag.toFixed(1)} mm top, ${d.check.railSag.toFixed(1)} mm rails under ${d.check.load} kg`,
     total: (d) => `${(d.parts.profileTotal / 1000).toFixed(2)} m of ${d.size}${d.size} profile in total`,
+  },
+  coffee: {
+    form: $('coffeeConfig'),
+    defaults: COFFEE_DEFAULTS,
+    strings: ['middleRail'],
+    compute: computeCoffee,
+    rows: coffeeRows,
+    steps: coffeeSteps,
+    keys: coffeeKeys,
+    summary: (d) =>
+      `1" 10-series profile · legs ${d.legLength} mm · ${d.totalHeight} mm tall with feet · pan ${d.parts.pan.width} × ${d.parts.pan.depth} mm${d.midRail ? ' · middle rail' : ''}`,
+    total: (d) => `${(d.parts.profileTotal / 1000).toFixed(2)} m of 1" 10-series profile in total`,
   },
 };
 
@@ -168,7 +181,7 @@ function showTab(name) {
   write(TAB_KEY, name);
   document.querySelectorAll('[data-for]').forEach((el) => (el.hidden = !el.dataset.for.split(' ').includes(name)));
   document.querySelector('main').dataset.page = name;
-  if (name === 'desk' && $('tab-cut').getAttribute('aria-selected') === 'true') selectBuildTab('parts');
+  if (name !== 'shelf' && $('tab-cut').getAttribute('aria-selected') === 'true') selectBuildTab('parts');
   if (fromHash() !== name) history.replaceState(null, '', `#${name}`);
   const found = findPiece(name);
   $('crumb').textContent = found ? found.group.label : '';
@@ -375,7 +388,8 @@ function buildPdf() {
   if (tab === 'shelf') {
     downloadSpec(current, t.rows(current), t.steps(current), viewer.snapshot(), cutMyText(cutMyOrder(current)), renderParts(current), null, renderSteps(current, shelfStepTags(current)));
   } else {
-    downloadSpec(current, t.rows(current), t.steps(current), viewer.snapshot(), null, renderParts(current), t.summary(current), renderSteps(current, deskStepTags(current)));
+    const tags = tab === 'coffee' ? coffeeStepTags(current) : deskStepTags(current);
+    downloadSpec(current, t.rows(current), t.steps(current), viewer.snapshot(), null, renderParts(current), t.summary(current), renderSteps(current, tags));
   }
 }
 showTab(tab);
