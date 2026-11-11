@@ -25,6 +25,13 @@ export const CATALOG = [
       about: 'A T-slot aluminium frame in 2020, 3030 or 4040 profile, with a plywood or linoleum top.',
       credit: 'Based on the Profile Desk Frame by Palmer Purcell (CPlot).',
       render: 'assets/renders/profile-desk.jpg',
+    }, {
+      id: 'coffee',
+      label: 'Coffee table',
+      blurb: 'T-slot frame, stainless steel top',
+      about: 'A low 1" T-slot aluminium frame with a folded stainless steel pan for a top.',
+      credit: 'Designed by CPlot.',
+      render: 'assets/renders/coffee-table.jpg',
     }],
   },
 ];

@@ -3,6 +3,7 @@
 
 export function downloadSpec(design, rows, steps, shot, cutMy, partShots, summary, stepShots) {
   const desk = design.kind === 'desk';
+  const coffee = design.kind === 'coffee';
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const { input, d } = design;
@@ -28,10 +29,10 @@ export function downloadSpec(design, rows, steps, shot, cutMy, partShots, summar
   };
 
   doc.setFont('courier', 'bold').setFontSize(16).setTextColor(30);
-  doc.text(desk ? 'PROFILE DESK' : 'ROD SHELF', M, y);
+  doc.text(coffee ? 'COFFEE TABLE' : desk ? 'PROFILE DESK' : 'ROD SHELF', M, y);
   y += 6;
   doc.setFont('courier', 'normal').setFontSize(9).setTextColor(90);
-  const sub = desk ? `${design.size}${design.size} profile` : `${design.shelves} shelves · Ø${d} rods`;
+  const sub = coffee ? '1" 10-series profile' : desk ? `${design.size}${design.size} profile` : `${design.shelves} shelves · Ø${d} rods`;
   doc.text(`${input.width} × ${input.depth} × ${input.height} mm · ${sub} · ${new Date().toISOString().slice(0, 10)}`, M, y);
   y += 6;
 
@@ -41,7 +42,10 @@ export function downloadSpec(design, rows, steps, shot, cutMy, partShots, summar
   y += imgH + 6;
 
   heading('Configuration');
-  if (desk) {
+  if (coffee) {
+    para(`Width ${input.width} mm · depth ${input.depth} mm · legs ${input.height} mm${design.midRail ? ' · middle rail' : ''}`);
+    para(summary);
+  } else if (desk) {
     para(`Width ${input.width} mm · depth ${input.depth} mm · height to top ${input.height} mm`);
     para(`Top ${input.topThickness} mm plywood${input.topFinish === 'linoleum' ? ' with linoleum' : ''} · ${summary}`);
   } else {
@@ -63,12 +67,12 @@ export function downloadSpec(design, rows, steps, shot, cutMy, partShots, summar
     columnStyles: { 2: { halign: 'right', fontStyle: 'bold', cellWidth: 14 } },
   });
   y = doc.lastAutoTable.finalY + 4;
-  para(desk ? `${(design.parts.profileTotal / 1000).toFixed(2)} m of ${design.size}${design.size} profile in total` : `${(design.parts.rodTotalLength / 1000).toFixed(2)} m of Ø${d} rod in total`);
+  para(coffee ? `${(design.parts.profileTotal / 1000).toFixed(2)} m of 1" 10-series profile in total` : desk ? `${(design.parts.profileTotal / 1000).toFixed(2)} m of ${design.size}${design.size} profile in total` : `${(design.parts.rodTotalLength / 1000).toFixed(2)} m of Ø${d} rod in total`);
 
   const ctx = { M, textW, getY: () => y, setY: (v) => (y = v), heading };
-  if (partShots) (desk ? deskHardware : partsDetail)(doc, design, partShots, ctx);
+  if (partShots) (coffee ? coffeeHardware : desk ? deskHardware : partsDetail)(doc, design, partShots, ctx);
 
-  if (!desk) {
+  if (!desk && !coffee) {
     heading('Hole centres per sheet (x, y mm from front left)');
     para(`Ø${design.parts.sheets.holeD} mm: ` + design.parts.sheets.holes.map(([hx, hy]) => `(${Math.round(hx)}, ${hy})`).join('  '));
 
@@ -83,7 +87,7 @@ export function downloadSpec(design, rows, steps, shot, cutMy, partShots, summar
     steps.forEach((s, i) => para(`${i + 1}. ${s}`));
   }
 
-  deliver(doc, `${desk ? 'desk' : 'shelf'}-${input.width}x${input.depth}x${input.height}.pdf`);
+  deliver(doc, `${coffee ? 'coffee-table' : desk ? 'desk' : 'shelf'}-${input.width}x${input.depth}x${input.height}.pdf`);
 }
 
 // --- parts detail: one block per part, render on the left, dimensions on the right ------
@@ -279,6 +283,22 @@ function deskHardware(doc, design, shots, { M, getY, setY, heading }) {
     ...(parts.threeHolePlates ? [[shots.joiningPlate3, '3 Hole Joining Plate', `${parts.threeHolePlates}x  across the centre rail`]] : []),
     [shots.tab, 'Joining plate', `${parts.tabs}x  under the rails, carrying the top`],
   ];
+  hardwareGrid(doc, items, { M, getY, setY, heading });
+}
+
+// Coffee table hardware, in the same grid as the desk's.
+function coffeeHardware(doc, design, shots, ctx) {
+  const { parts } = design;
+  hardwareGrid(doc, [
+    [shots.profile, '1" 10-series T-slot profile', `${(parts.profileTotal / 1000).toFixed(2)} m, cut list above`],
+    [shots.lBracket, 'Silver Corner Bracket', `${parts.brackets}x  McMaster 47065T236, one per rail end, with screws and end-feed nuts`],
+    [shots.foot, 'Levelling mount', `${parts.feet}x  McMaster 47065T341`],
+    [shots.tNut, 'Drop-in T-nut', `${parts.panScrews}x  1/4"-20, McMaster 6000N501`],
+    [shots.bolt, 'Button head screw', `${parts.panScrews}x  1/4"-20 × 3/8", pan to rails`],
+  ], ctx);
+}
+
+function hardwareGrid(doc, items, { M, getY, setY, heading }) {
   setY(getY() + 2);
   heading('Hardware');
   const cell = 58;

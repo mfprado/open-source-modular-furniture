@@ -409,6 +409,7 @@ export function shelfRows(design) {
 
 function buildModel(design) {
   if (design.kind === 'desk') return buildDesk(design);
+  if (design.kind === 'coffee') return buildCoffee(design);
   const g = new THREE.Group();
   const { input, d, clampSpec, flange, xs, ys, postLength } = design;
   const { width: W, depth: D, thickness: t, finish = 'fluted' } = input;
@@ -541,6 +542,26 @@ export function renderParts(design) {
     return out;
   }
 
+  if (design.kind === 'coffee') {
+    const { p } = design;
+    const frame = profileMaterial();
+    const nut = rollInNut(p);
+    nut.scale.setScalar(3);
+    const bolt = new THREE.Group();
+    bolt.add(boltHead(p, false), boltShank(p, p * 0.375));
+    const out = {
+      profile: shot(profileBar(p, p * 4, frame), new THREE.Vector3(1, 0.8, 1.6)),
+      lBracket: shot(lBracket(p, p * 0.875, 2.5, frame, p, false), new THREE.Vector3(0.6, 0.5, 1.4)),
+      tNut: shot(nut),
+      bolt: shot(bolt),
+      foot: shot(levellingFoot(p)),
+    };
+    pmrem.dispose();
+    r.dispose();
+    r.forceContextLoss();
+    return out;
+  }
+
   const { input, d, clampSpec, flange, parts } = design;
   acrylic.color.set(input.color ?? '#202d6a');
 
@@ -617,18 +638,23 @@ function orient(obj, a, b, at) {
 }
 
 // Drop-in T-nut as it sits in a slot: small block, pressed against the slot lips.
-// Flanged button head of a hex socket bolt (supplier drawing: head Ø11.4 mm and 2.6 mm
-// tall on an M6). Sits on the surface at y = 0 and points along +y; flip it to hang below.
-function boltHead(p) {
+// Button head of a hex socket bolt, flanged by default (supplier drawing: head Ø11.4 mm and
+// 2.6 mm tall on an M6); the coffee table's screws are plain button heads, no flange.
+// Sits on the surface at y = 0 and points along +y; flip it to hang below.
+function boltHead(p, flanged = true) {
   const g = new THREE.Group();
   const r = p * 0.19;
-  const flange = mesh(new THREE.CylinderGeometry(r, r, p * 0.03, 24), chrome);
-  flange.position.y = p * 0.015;
+  const base = flanged ? p * 0.03 : 0;
+  if (flanged) {
+    const flange = mesh(new THREE.CylinderGeometry(r, r, base, 24), chrome);
+    flange.position.y = base / 2;
+    g.add(flange);
+  }
   const dome = mesh(new THREE.CylinderGeometry(r * 0.45, r * 0.78, p * 0.06, 24), chrome);
-  dome.position.y = p * 0.06;
+  dome.position.y = base + p * 0.03;
   const socket = mesh(new THREE.CylinderGeometry(r * 0.3, r * 0.3, p * 0.01, 6), dark);
-  socket.position.y = p * 0.09;
-  g.add(flange, dome, socket);
+  socket.position.y = base + p * 0.06;
+  g.add(dome, socket);
   return g;
 }
 
@@ -744,7 +770,7 @@ function gusset(L, w, holes, mat, p) {
 // 7/8" wide (22.6 mm), 3/16" thick, a small fillet inside the bend and the free ends
 // rounded on the inside face, one Ø0.27" hole centred in each leg. Profiles lie at local
 // y < 0 and x < 0; the width runs along local z.
-function lBracket(L, w, t, mat, p) {
+function lBracket(L, w, t, mat, p, flanged = true) {
   const g = new THREE.Group();
   const th = p * 0.1875;
   const rf = th * 0.6;
@@ -762,7 +788,7 @@ function lBracket(L, w, t, mat, p) {
   g.add(mesh(geo, mat));
   const at = L * 0.56; // hole centre along each leg
   for (const rz of [0, Math.PI / 2]) {
-    const head = boltHead(p);
+    const head = boltHead(p, flanged);
     head.rotation.z = -rz; // head points away from the profile
     head.position.set(rz ? th : at, rz ? at : th, 0);
     const nut = tNut(p);
@@ -1021,6 +1047,174 @@ function buildDesk(design) {
 }
 
 const TAB_T = 5; // matches TAB_THICKNESS in desk.js
+
+// --- coffee table ------------------------------------------------------------------
+
+// Roll-in T-nut with a spring ball (CPlot's pan nuts): a flat top under the slot lips with
+// the tapped hole, a rounded underside so it rolls into the slot and turns a quarter turn,
+// and a small spring-loaded ball on top that holds it where it's put. Same axes as tNut:
+// top towards the fitting along local +y, length along local z.
+function rollInNut(p) {
+  const g = new THREE.Group();
+  const hw = p * 0.24, depth = p * 0.2, len = p * 0.42;
+  const s = new THREE.Shape().moveTo(-hw, 0).lineTo(hw, 0).lineTo(hw, -depth * 0.35)
+    .quadraticCurveTo(hw, -depth, 0, -depth).quadraticCurveTo(-hw, -depth, -hw, -depth * 0.35).closePath();
+  const geo = new THREE.ExtrudeGeometry(s, { depth: len, bevelEnabled: true, bevelThickness: 0.2, bevelSize: 0.2, bevelSegments: 1, curveSegments: 12 });
+  geo.translate(0, 0, -len / 2);
+  g.add(mesh(geo, chrome));
+  // tapped hole, standing just proud of the top (and its bevel) so it reads from above
+  const hole = mesh(new THREE.CylinderGeometry(p * 0.1, p * 0.1, depth + 0.6, 16), dark);
+  hole.position.y = -depth / 2 + 0.3;
+  g.add(hole);
+  const ball = mesh(new THREE.SphereGeometry(p * 0.035, 12, 8), chrome);
+  ball.position.set(0, p * 0.01, len * 0.32);
+  g.add(ball);
+  return g;
+}
+
+// Brushed stainless steel for the pan: fully metallic, a little rough so it reads satin.
+const stainless = new THREE.MeshPhysicalMaterial({ color: 0xdfe2e4, metalness: 1, roughness: 0.42, clearcoat: 0.2, clearcoatRoughness: 0.4 });
+
+function buildCoffee(design) {
+  const g = new THREE.Group();
+  const { input, p, legLength, footHeight: fh, midRail, midAlongX, parts } = design;
+  const W = Number(input.width);
+  const D = Number(input.depth);
+  const frame = profileMaterial();
+  const X = (x) => x - W / 2;
+  const Z = (y) => y - D / 2;
+  const at = (x, y, z) => new THREE.Vector3(X(x), z, Z(y));
+  let tag = '';
+  const add = (o, part, hw = []) => {
+    o.userData = { tag, part, hw };
+    g.add(o);
+    return o;
+  };
+  const name = '1" 10-series';
+  const barX = (len, x0, y, z, part) => {
+    const b = add(profileBar(p, len, frame), part);
+    b.rotation.y = Math.PI / 2;
+    b.position.set(X(x0), z + p / 2, Z(y));
+  };
+  const barY = (len, x, y0, z, part) => {
+    const b = add(profileBar(p, len, frame), part);
+    b.position.set(X(x), z + p / 2, Z(y0));
+  };
+  const bracket = 'Silver Corner Bracket 47065T236';
+  // Two corner brackets where a rail meets a leg (or the middle rail meets a top rail).
+  // dir: the rail's direction away from the joint face; faces: the rail faces the brackets
+  // sit on, as outward directions [x, y, z] from the rail's centre line.
+  const joint = (dir, face, centre, z, faces) => {
+    for (const o of faces) {
+      const pt = dir[0]
+        ? at(face, centre + (o[1] * p) / 2, z + (o[2] * p) / 2)
+        : at(centre + (o[0] * p) / 2, face, z + (o[2] * p) / 2);
+      add(orient(lBracket(p, p * 0.875, 2.5, frame, p, false), dir, o, pt), bracket);
+    }
+  };
+  const legs = [[p / 2, p / 2], [W - p / 2, p / 2], [p / 2, D - p / 2], [W - p / 2, D - p / 2]];
+  const topZ = fh + legLength - p; // underside of the top rails
+  // A ring of 4 rails between the legs, underside at z, with its 8 joints: one bracket
+  // centred on the rail's open face, on top (vertical 1) for the bottom ring, underneath
+  // (-1) for the top ring, clear of the pan's folds (CPlot).
+  const ring = (z, label, vertical) => {
+    for (const y of [p / 2, D - p / 2]) {
+      barX(W - 2 * p, p, y, z, `${label} rail ${name} × ${design.railW} mm`);
+      const faces = [[0, 0, vertical]];
+      joint([1, 0, 0], p, y, z + p / 2, faces);
+      joint([-1, 0, 0], W - p, y, z + p / 2, faces);
+    }
+    for (const x of [p / 2, W - p / 2]) {
+      barY(D - 2 * p, x, p, z, `${label} rail ${name} × ${design.railD} mm`);
+      const faces = [[0, 0, vertical]];
+      joint([0, 1, 0], p, x, z + p / 2, faces);
+      joint([0, -1, 0], D - p, x, z + p / 2, faces);
+    }
+  };
+
+  // 1. legs, cut to length
+  tag = 'legs';
+  for (const [x, y] of legs) {
+    const b = add(profileBar(p, legLength, frame), `Leg ${name} × ${legLength} mm`);
+    b.rotation.x = -Math.PI / 2;
+    b.position.copy(at(x, y, fh));
+  }
+  // 2. levelling mounts
+  tag = 'feet';
+  for (const [x, y] of legs) add(levellingFoot(p), 'Levelling mount 47065T341').position.copy(at(x, y, 0));
+  // 3. bottom rails, flush with the leg ends
+  tag = 'bottomRails';
+  ring(fh, 'Bottom', 1);
+  // 4. top rails, flush with the leg tops
+  tag = 'topRails';
+  ring(topZ, 'Top', -1);
+  // 5. middle rail under the pan, along the longer sides, flush with the top rails and
+  //    joined to them with a bracket each side; the pan's folds are notched round both (CPlot).
+  const { width: pw, depth: pd, thickness: t, fold } = parts.pan;
+  if (midRail) {
+    tag = 'midRail';
+    const len = midAlongX ? design.railW : design.railD;
+    const z = topZ;
+    const sides = midAlongX ? [[0, 1, 0], [0, -1, 0]] : [[1, 0, 0], [-1, 0, 0]];
+    if (midAlongX) {
+      barX(len, p, D / 2, z, `Middle rail ${name} × ${len} mm`);
+      joint([1, 0, 0], p, D / 2, z + p / 2, sides);
+      joint([-1, 0, 0], W - p, D / 2, z + p / 2, sides);
+    } else {
+      barY(len, W / 2, p, z, `Middle rail ${name} × ${len} mm`);
+      joint([0, 1, 0], p, W / 2, z + p / 2, sides);
+      joint([0, -1, 0], D - p, W / 2, z + p / 2, sides);
+    }
+  }
+  // 6. drop-in T-nuts in the inner slot of the top rails, spread along each side
+  tag = 'nuts';
+  const along = (n, len, off) => Array.from({ length: n }, (_, i) => off + ((i + 1) * len) / (n + 1));
+  const nutZ = topZ + p / 2;
+  // top of the nut just under the slot lips
+  const nut = (x, y, inward) => add(orient(rollInNut(p), [0, 0, 1], inward, at(x, y, nutZ)), 'Drop-in T-nut 1/4"-20');
+  for (const [y, sy] of [[p / 2, 1], [D - p / 2, -1]])
+    for (const x of along(parts.screwsW, W - 2 * p, p)) nut(x, y + sy * (p / 2 - p * 0.1), [0, sy, 0]);
+  for (const [x, sx] of [[p / 2, 1], [W - p / 2, -1]])
+    for (const y of along(parts.screwsD, D - 2 * p, p)) nut(x + sx * (p / 2 - p * 0.1), y, [sx, 0, 0]);
+
+  // 7. the pan: top sheet over the opening, edges folded down inside it
+  tag = 'pan';
+  const pan = new THREE.Group();
+  const top = mesh(new THREE.BoxGeometry(pw, t, pd), stainless);
+  top.position.y = -t / 2;
+  pan.add(top);
+  // folds as [along x?, length, x, z]; the two the middle rail meets get a 3" notch: the
+  // rail and a bracket arm each side of it
+  const folds = [[true, pw, 0, -pd / 2 + t / 2], [true, pw, 0, pd / 2 - t / 2], [false, pd, -pw / 2 + t / 2, 0], [false, pd, pw / 2 - t / 2, 0]];
+  for (const [alongX, len, x, z] of folds) {
+    const notched = midRail && alongX !== midAlongX;
+    const gap = 3 * p;
+    const pieces = notched ? [[(len - gap) / 2, -(len + gap) / 4], [(len - gap) / 2, (len + gap) / 4]] : [[len, 0]];
+    for (const [l, off] of pieces) {
+      const edge = mesh(new THREE.BoxGeometry(alongX ? l : t, fold, alongX ? t : l), stainless);
+      edge.position.set(x + (alongX ? off : 0), -fold / 2, z + (alongX ? 0 : off));
+      pan.add(edge);
+    }
+  }
+  // flush with the top rails, or resting on the middle rail 1/16" above them (CPlot)
+  pan.position.copy(at(W / 2, D / 2, fh + legLength + (midRail ? t : 0)));
+  add(pan, `Stainless steel pan ${pw} × ${pd} mm`, [['Button head screw 1/4"-20 × 3/8"', parts.panScrews]]);
+  return g;
+}
+
+// Which model tags are new in each written coffee table step (parallel to coffeeSteps).
+export function coffeeStepTags(design) {
+  return [
+    ['legs'],
+    ['feet'],
+    ['bottomRails'],
+    ['topRails'],
+    ...(design.midRail ? [['midRail']] : []),
+    ['nuts'],
+    ['pan'],
+    [],
+  ];
+}
 
 // Which model tags are new in each written desk step (parallel to deskSteps).
 export function deskStepTags(design) {
