@@ -48,6 +48,29 @@ export const IDEAS = [
       </g>
     </svg>`,
   },
+  {
+    title: 'Glass-top desk',
+    points: [
+      'A desk with a glass top.',
+      'A wide plywood base with drawers, and slim metal rails at the ends.',
+      'Inspired by a studio desk seen on Instagram.',
+    ],
+    links: [{ name: 'Instagram post (inspiration)', url: 'https://www.instagram.com/p/DgAS4VTlDrC/' }],
+    issue: 16,
+    // traced from the first photo of the post: glass top, plywood drawer base, slim metal end rails
+    sketch: `<svg viewBox="0 0 200 240" role="img" aria-label="Sketch: desk with a glass top, a wide plywood base with three drawers, and slim metal rails at the ends">
+      <g stroke="#8a8f94" stroke-width="4" stroke-linecap="round"><line x1="48" y1="82" x2="48" y2="186"/><line x1="194" y1="82" x2="194" y2="172"/></g>
+      <polygon points="170,98 194,84 194,172 170,188" fill="#d6c8a6" stroke="#cbbd99"/>
+      <rect x="62" y="98" width="108" height="90" fill="#e9dfc7" stroke="#cbbd99"/>
+      <g stroke="#cbbd99"><line x1="62" y1="128" x2="170" y2="128"/><line x1="62" y1="158" x2="170" y2="158"/></g>
+      <g stroke="#5b6168" stroke-width="3" stroke-linecap="round"><line x1="104" y1="113" x2="128" y2="113"/><line x1="104" y1="143" x2="128" y2="143"/><line x1="104" y1="173" x2="128" y2="173"/></g>
+      <g stroke="#8a8f94" stroke-width="4" stroke-linecap="round"><line x1="24" y1="98" x2="24" y2="200"/><line x1="24" y1="98" x2="48" y2="84"/><line x1="170" y1="98" x2="170" y2="200"/></g>
+      <g fill="#8a8f94"><ellipse cx="24" cy="201" rx="5" ry="2"/><ellipse cx="48" cy="187" rx="5" ry="2"/><ellipse cx="170" cy="201" rx="5" ry="2"/><ellipse cx="194" cy="173" rx="5" ry="2"/></g>
+      <polygon points="14,94 176,94 200,80 38,80" fill="rgba(160,200,215,.45)" stroke="#8a8f94"/>
+      <rect x="14" y="94" width="162" height="5" fill="rgba(160,200,215,.45)" stroke="#8a8f94"/>
+      <polygon points="176,94 200,80 200,85 176,99" fill="rgba(160,200,215,.45)" stroke="#8a8f94"/>
+    </svg>`,
+  },
 ];
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
